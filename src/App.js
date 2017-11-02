@@ -1,14 +1,27 @@
 import React, { Component } from 'react';
-import Emojis from './Emojis'
+import Emojis from './Emojis';
+import EmojiJSON from './emojiList.json';
 
 
 class App extends Component { 
     constructor (props) {
         super(props);
+        // SET THE STATE HERE
         this.state = {
-            list: [1, 2, 3],
+            list: EmojiJSON,
             input: ''
         }
+        // SET UP YOUR OWN CUSTOM FUNCTIONS HERE
+        this.handleInput = this.handleInput.bind(this);
+    }
+
+    handleInput (event) {
+
+        // every time the input changes on the search bar, we want to loop through all the emojis, checking the event.target.value against the keywords inside each emoji object, and then filtering out the objects that don't match. FINALLY, setting the state with the new array.
+
+        this.setState({
+            input : event.target.value
+        })
     }
 
     render () {
@@ -17,8 +30,9 @@ class App extends Component {
                 <input 
                     className="searchbar"
                     placeholder="Type something"
+                    onChange={this.handleInput}
                 />
-                <Emojis parentState={this.state.list}/>
+                {<Emojis parentState={this.state.list}/>}
             </div>
         )
     }
