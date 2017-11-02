@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Emojis from './Emojis'
 
 
-class App extends Component { 
+class App extends Componentzzzzz { 
     constructor (props) {
         super(props);
         this.state = {
