@@ -1,6 +1,12 @@
 import React from 'react';
 
+function Emojis (props) {
+    return props.parentState.map(function (ele) {
+        return (
+            <span>{ele}</span>
+        )
+    })
+}
 
-// TODO: Write a dumb component
 
 export default Emojis;
