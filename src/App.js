@@ -8,7 +8,7 @@ class App extends Component {
         super(props);
         // SET THE STATE HERE
         this.state = {
-            list: EmojiJSON,
+            list: [],
             input: ''
         }
         // SET UP YOUR OWN CUSTOM FUNCTIONS HERE
@@ -17,11 +17,32 @@ class App extends Component {
 
     handleInput (event) {
 
+        
+        // SANITISE
+        var input = event.target.value.toLowerCase();
+        
+        // CSS LOGIC
+        
         // every time the input changes on the search bar, we want to loop through all the emojis, checking the event.target.value against the keywords inside each emoji object, and then filtering out the objects that don't match. FINALLY, setting the state with the new array.
+        
+        var newArray = EmojiJSON.filter(function (emojiObject) {
+            if (emojiObject.keywords.includes(input)) {
+                if (input === '') return;
 
-        this.setState({
-            input : event.target.value
+                else return emojiObject;
+            }
         })
+        
+        this.setState({
+            input: input,
+            list : newArray
+        })
+
+        if (this.state.input === '') {
+            this.setState({
+                list: []
+            })
+        }
     }
 
     render () {
