@@ -13,11 +13,28 @@ class App extends Component {
         }
         // SET UP YOUR OWN CUSTOM FUNCTIONS HERE
         this.handleInput = this.handleInput.bind(this);
+        this.handleEmojiClick = this.handleEmojiClick.bind(this);
     }
 
-    handleInput (event) {
+    handleEmojiClick (event) {
+        // innerHTML
+        var emoji = event.target.innerHTML;
+        // actual Node
+        var emojiElement = event.target;
 
-        
+        emojiElement.style.backgroundColor = "red";
+
+        var textArea = document.createElement('textarea')
+        textArea.textContent = emoji;
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+    }
+
+    
+    handleInput (event) {
         // SANITISE
         var input = event.target.value.toLowerCase();
         
@@ -53,7 +70,10 @@ class App extends Component {
                     placeholder="Type something"
                     onChange={this.handleInput}
                 />
-                {<Emojis parentState={this.state.list}/>}
+                {<Emojis 
+                    parentState={this.state.list}
+                    handleEmojiClick={this.handleEmojiClick}
+                />}
             </div>
         )
     }
