@@ -1,4 +1,4 @@
-export default function debounce (func, wait, context) {
+export function debounce (func, wait, context) {
     var previousCallTime;
     var firstCall = true;
     var id; // we store the id of each setTimeout in here, so that we can cancel it later if needs be
@@ -36,4 +36,14 @@ export default function debounce (func, wait, context) {
             startTimer();
         }
     }
+}
+
+export function copyToClipBoard (emoji) {
+    var textArea = document.createElement('textarea')
+    textArea.textContent = emoji;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    console.log('Copied to clipboard!');
 }

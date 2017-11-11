@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Emojis from './Emojis';
 import EmojiJSON from './emojiList.json';
-import debounce from './helpers';
+import { debounce, copyToClipBoard } from './helpers';
+import Notifications, { notify } from 'react-notify-toast'; // => npm package for notifications
 
 class App extends Component { 
     constructor (props) {
@@ -11,12 +12,14 @@ class App extends Component {
         this.state = {
             list: [],
             input: '',
+            lastEmojiClicked: '',
             debouncedFunc: debounce(function (newArray) {
                 this.setState({
                     list: newArray
                 })
             }, 750, this)
         }
+
         // SET UP YOUR OWN CUSTOM FUNCTIONS HERE
         this.handleInput = this.handleInput.bind(this);
         this.handleEmojiClick = this.handleEmojiClick.bind(this);
@@ -25,18 +28,24 @@ class App extends Component {
     handleEmojiClick (event) {
         // innerHTML
         var emoji = event.target.innerHTML;
-        // actual Node
+        // actual Element
         var emojiElement = event.target;
 
-        emojiElement.style.backgroundColor = "red";
+        // set this emoji onto the state, so that the next time this handler runs, we can quickly reference it and clear all CSS before setting new CSS on a new emoji
+        this.setState({
+            emoji: emojiElement
+        })
 
-        // copy to clipboard functionality
-        var textArea = document.createElement('textarea')
-        textArea.textContent = emoji;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
+        // if there is an emoji sat in the state, let's frikkin clear it's CSS right now
+        if (this.state.emoji) {
+            this.state.emoji.removeAttribute('style');
+        }
+
+        emojiElement.style.backgroundColor = "skyblue";
+
+        // copy to clipboard functionality, extracted to helpers.js
+        copyToClipBoard(emoji);
+        notify.show('Copied to clipboard!', 'custom', 1000, {background: 'white', text: '#00D1B2'});
     }
 
     handleInput (event) {
@@ -65,18 +74,34 @@ class App extends Component {
         
     render () {
         return (
-        <div className="app">
-            <input 
-                className="searchbar"
-                placeholder="Type something"
-                onChange={this.handleInput}
-            />
-            {<Emojis 
-                parentState={this.state.list}
-                handleEmojiClick={this.handleEmojiClick}
-            />}
-        </div>
-    )
+            <div>
+                <Notifications />
+                <section className="hero is-small is-primary">
+                    <div className="hero-body">
+                        <div className="container">
+                            <h1 className="title">
+                            👻💩🐔 &nbsp; Emoji Funtime! &nbsp; 😁😆😍
+                            </h1>
+                        </div>
+                    </div>
+                </section>
+
+                <div className="main">
+                    <input 
+                        className="input"
+                        placeholder="Type something"
+                        onChange={this.handleInput}
+                        value={this.state.input}
+                    />
+                    <div id="emojis">
+                        {<Emojis 
+                            parentState={this.state.list}
+                            handleEmojiClick={this.handleEmojiClick}
+                        />}
+                    </div>
+                </div>
+            </div>
+        )
     }
 }
 

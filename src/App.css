@@ -1,3 +1,31 @@
+.App {
+    text-align: center;
+}
+
 .singleEmoji {
+    display: inline-block;
     cursor: pointer;
+    border-radius: 30px;
+    margin-left: 5px;
+    padding-left: 2.2px;
+    text-align: center;
+    padding-right: 2.2px;
+    padding-bottom: 3px;
+    font-size: 30px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Pacifico', cursive;
+}
+
+.main {
+    margin-left: 20em;
+    margin-right: 20em;
+    margin-top: 6em;
+}
+
+.input {
+    margin-bottom: 3em;
 }
