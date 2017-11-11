@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 import Emojis from './Emojis';
 import EmojiJSON from './emojiList.json';
-
+import debounce from './helpers';
 
 class App extends Component { 
     constructor (props) {
         super(props);
+
         // SET THE STATE HERE
         this.state = {
             list: [],
-            input: ''
+            input: '',
+            debouncedFunc: debounce(function (newArray) {
+                this.setState({
+                    list: newArray
+                })
+            }, 750, this)
         }
         // SET UP YOUR OWN CUSTOM FUNCTIONS HERE
         this.handleInput = this.handleInput.bind(this);
@@ -24,58 +30,53 @@ class App extends Component {
 
         emojiElement.style.backgroundColor = "red";
 
+        // copy to clipboard functionality
         var textArea = document.createElement('textarea')
         textArea.textContent = emoji;
         document.body.appendChild(textArea);
         textArea.select();
-
         document.execCommand('copy');
         document.body.removeChild(textArea);
     }
 
-    
     handleInput (event) {
-        // SANITISE
         var input = event.target.value.toLowerCase();
-        
-        // CSS LOGIC
-        
-        // every time the input changes on the search bar, we want to loop through all the emojis, checking the event.target.value against the keywords inside each emoji object, and then filtering out the objects that don't match. FINALLY, setting the state with the new array.
         
         var newArray = EmojiJSON.filter(function (emojiObject) {
             if (emojiObject.keywords.includes(input)) {
                 if (input === '') return;
-
                 else return emojiObject;
             }
         })
         
         this.setState({
-            input: input,
-            list : newArray
+            input: input
         })
 
+        this.state.debouncedFunc(newArray);
+
+        // don't render any emojis if the searchbar is empty
         if (this.state.input === '') {
             this.setState({
                 list: []
             })
         }
     }
-
+        
     render () {
         return (
-            <div className="app">
-                <input 
-                    className="searchbar"
-                    placeholder="Type something"
-                    onChange={this.handleInput}
-                />
-                {<Emojis 
-                    parentState={this.state.list}
-                    handleEmojiClick={this.handleEmojiClick}
-                />}
-            </div>
-        )
+        <div className="app">
+            <input 
+                className="searchbar"
+                placeholder="Type something"
+                onChange={this.handleInput}
+            />
+            {<Emojis 
+                parentState={this.state.list}
+                handleEmojiClick={this.handleEmojiClick}
+            />}
+        </div>
+    )
     }
 }
 
